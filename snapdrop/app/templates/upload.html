@@ -164,12 +164,6 @@
   </head>
   <body>
     <header class="row-reverse">
-      <div class="toggle-switch">
-        <label class="switch-label">
-          <input type="checkbox" class="checkbox" id="theme-toggle-checkbox" />
-          <span class="slider"></span>
-        </label>
-      </div>
       <a href="#about" class="icon-button" title="About Snapdrop">
         <svg class="icon">
           <use xlink:href="#info-outline" />
@@ -265,18 +259,19 @@
     <ul>
       {% for file in files %}
       <li>
-        <a href="{% url 'download_file' file_id=file.id %}"
-          >{{ file.filename }}</a
-        >
+        FILE ID: {{file.id}} - 
+        <a href="{% url 'download_file' file.id %}">{{file.file.name}}</a>
       </li>
-      {% endfor %}
+      {% endfor %} {% if files.count == 0 %}
+      <li>No files uploaded yet.</li>
+      {% endif %} {% if files.count > 5 %}
+      <li>Only the last 5 files are shown.</li>
+      {% endif %}
     </ul>
     <script>
-      document
-        .getElementById("theme-toggle-checkbox")
-        .addEventListener("change", function () {
-          document.body.classList.toggle("dark-theme");
-        });
+      window.addEventListener("beforeunload", function () {
+        navigator.sendBeacon("/cleanup-files/");
+      });
     </script>
   </body>
 </html>
